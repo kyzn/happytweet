@@ -1,7 +1,5 @@
 <?php
-/**
- * @file
- * Take the user when they return from Twitter. Get access tokens.
+/* Take the user when they return from Twitter. Get access tokens.
  * Verify credentials and redirect to based on response from Twitter.
  */
 
@@ -9,9 +7,12 @@
 session_start();
 require_once('twitteroauth/twitteroauth.php');
 require_once('twitter_config.php');
+require_once('connection.php');
+
 
 /* If the oauth_token is old redirect to the connect page. */
-if (isset($_REQUEST['oauth_token']) && $_SESSION['oauth_token'] !== $_REQUEST['oauth_token']) {
+if (isset($_REQUEST['oauth_token']) && 
+	$_SESSION['oauth_token'] !== $_REQUEST['oauth_token']) {
   $_SESSION['oauth_status'] = 'oldtoken';
   header('Location: ./twitter_clearsessions.php');
 }
@@ -23,8 +24,39 @@ $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $_SESSION['oauth_t
 $access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
 
 /* Save the access tokens. Normally these would be saved in a database for future use. */
-//TODO Add the access_token to the database
 $_SESSION['access_token'] = $access_token;
+
+
+$errmsg_arr = array ();
+$errflag = false;
+
+/* Check if user registered before */
+$stmt = $db->prepare("SELECT * FROM Users WHERE UserID=?");
+$stmt->execute(array(
+	$_SESSION['access_token']['user_id']
+	));
+$numrows = $stmt->rowCount();
+
+if($numrows == 0){ //No such user, add to database and proceed.
+	$stmt = $db->prepare("INSERT INTO Users VALUES (?,?,?,?,0,0,NOW(),NOW())");
+	$stmt->execute(array(
+		$_SESSION['access_token']['user_id'],
+		$_SESSION['access_token']['oauth_token'],
+		$_SESSION['access_token']['oauth_token_secret'],
+		$_SESSION['access_token']['screen_name']
+		));
+}else{ //User exists. Check if auths are correct.
+	$row = $stmt->fetch(PDO::FETCH_ASSOC);
+	$truetoken = $row['AuthToken'];
+	$truesecret = $row['AuthSecret'];
+	if($truetoken != $_SESSION['access_token']['oauth_token'] ||
+		$truesecret != $_SESSION['access_token']['oauth_token_secret']){
+		//Token or secret doesn't match the one on the database.. Don't proceed.
+		unset($_SESSION['access_token']);
+		header('Location: ./twitter_clearsessions.php');
+	}
+
+}
 
 /* Remove no longer needed request tokens */
 unset($_SESSION['oauth_token']);

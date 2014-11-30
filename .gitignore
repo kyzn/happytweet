@@ -171,3 +171,5 @@ local.properties
 .texlipse
 
 twitter_config.php
+connection.php
+install.sql

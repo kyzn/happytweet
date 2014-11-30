@@ -3,6 +3,7 @@
 session_start();
 require_once('twitteroauth/twitteroauth.php');
 require_once('twitter_config.php');
+require_once('connection.php');
 
 /* If access tokens are not available redirect to connect page. */
 if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_token']) || empty($_SESSION['access_token']['oauth_token_secret'])) {
@@ -16,9 +17,18 @@ $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oau
 
 /* If method is set change API call made. Test is called by default. */
 //TODO Fill the content with useful info.
-$content = $connection->get('account/verify_credentials');
+//$content = $connection->get('account/verify_credentials');
+$content=$_SESSION['access_token'];
 
 /* Some example calls */
+
+$connection->get('statuses/user_timeline',array(
+	'user_id' => $_SESSION['access_token']['user_id'],
+	'trim_user' => 'true',
+	'exclude_replies' => 'true',
+	'include_rts' => 'false'
+	));
+
 //$connection->get('users/show', array('screen_name' => 'abraham'));
 //$connection->post('statuses/update', array('status' => date(DATE_RFC822)));
 //$connection->post('statuses/destroy', array('id' => 5437877770));

@@ -9,8 +9,11 @@
  * Exit with an error message if the CONSUMER_KEY or CONSUMER_SECRET is not defined.
  */
 require_once('twitter_config.php');
-if (CONSUMER_KEY === '' || CONSUMER_SECRET === '' || CONSUMER_KEY === 'CONSUMER_KEY_HERE' || CONSUMER_SECRET === 'CONSUMER_SECRET_HERE') {
-  echo 'Consumer key error.';
+if (CONSUMER_KEY === '' || 
+	CONSUMER_SECRET === '' || 
+	CONSUMER_KEY === 'CONSUMER_KEY_HERE' || 
+	CONSUMER_SECRET === 'CONSUMER_SECRET_HERE') {
+  echo 'Consumer key error. Contact Kivanc.';
   exit;
 }
 
