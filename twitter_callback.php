@@ -37,7 +37,10 @@ $stmt->execute(array(
 	));
 $numrows = $stmt->rowCount();
 
+$firsttime=0;
+
 if($numrows == 0){ //No such user, add to database and proceed.
+	$firsttime=1;
 	$stmt = $db->prepare("INSERT INTO `Users` VALUES (?,?,?,?,0,0,NOW(),'0000-00-00','0');");
 	$stmt->execute(array(
 		$_SESSION['access_token']['user_id'],
@@ -46,28 +49,28 @@ if($numrows == 0){ //No such user, add to database and proceed.
 		$_SESSION['access_token']['screen_name']
 		));
 }else{ //User exists. Check if auths are correct.
+	$firsttime=0;
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
 	$truetoken = $row['AuthToken'];
 	$truesecret = $row['AuthSecret'];
 	if($truetoken != $_SESSION['access_token']['oauth_token'] ||
 		$truesecret != $_SESSION['access_token']['oauth_token_secret']){
 		//Token or secret doesn't match the one on the database.. Don't proceed.
-		//DO that, and sync stops working.
-		//unset($_SESSION['access_token']);
+		unset($_SESSION['access_token']);
 		header('Location: ./twitter_clearsessions.php');
 	}
 
 }
 /* Remove no longer needed request tokens */
-//DO that, and sync stops working.
-//unset($_SESSION['oauth_token']);
-//unset($_SESSION['oauth_token_secret']);
+unset($_SESSION['oauth_token']);
+unset($_SESSION['oauth_token_secret']);
 
 /* If HTTP response is 200 continue otherwise send to connect page to retry */
 if (200 == $connection->http_code) {
   /* The user has been verified and the access tokens can be saved for future use */
   $_SESSION['status'] = 'verified';
-  header('Location: ./index.php');
+  if($firsttime) header('Location: ./twitter_sync.php');
+  else header('Location: ./index.php');
 } else {
   /* Save HTTP status for error dialog on connnect page.*/
   header('Location: ./twitter_clearsessions.php');

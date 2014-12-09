@@ -20,12 +20,12 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 $DayPassedAfterLastSync = $row['DayPassed'];
 
 /*If last sync was in last 24 hrs, do not sync. Go back.*/
-if($DayPassedAfterLastSync == 0) 
+if($DayPassedAfterLastSync == 0){
 	//Maybe we can put this message in a POST, then show it on index.
-	echo "Your last sync was today! Come again tomorrow.";
+	//echo "Your last sync was today! Come again tomorrow.";
 	header('Location: ./index.php');
 	
-
+}else{
 //Get the id of last synced tweet
 $stmt=$db->prepare("SELECT LastSyncID FROM `Users` WHERE UserID=?");
 $stmt->execute(array($_SESSION['access_token']['user_id']));
@@ -68,7 +68,7 @@ foreach($content as $tweet)
 
   	//Insert into tweets table
 
-  	$stmt=$db->prepare("INSERT INTO Tweets VALUES (?,?,?,?,NOW())");
+  	$stmt=$db->prepare("INSERT INTO Tweets VALUES (?,?,?,?,NOW(),0,0)");
   	//TweetID, UserID, TweetText, TweetTime, CreatedOn
 $stmt->execute(array(
 	$tweet->id,
@@ -76,7 +76,7 @@ $stmt->execute(array(
 	$tweet->text,
 	$mysqlDate));
 
-echo "$newDate {$tweet->lang} {$tweet->id} {$tweet->text}\n";
+//echo "$newDate {$tweet->lang} {$tweet->id} {$tweet->text}\n";
   }
 
 }
@@ -91,5 +91,6 @@ $stmt->execute(array(
 
 /* Redirect */
 //Maybe we can put this message in a POST, then show it on index.
-echo "Synced!";
+//echo "Synced!";
 header('Location: ./index.php');
+}
