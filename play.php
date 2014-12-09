@@ -30,7 +30,7 @@ if(!$loggedin){ header('Location: ./index.php');}
   <script type="text/javascript" src="js/modernizr.js"></script>
   <script type="text/javascript" src="js/tab.js"></script>
   <script type="text/javascript" src="js/countdown.js"></script>
-  <link rel="shortcut icon" type="image/x-icon" href="https://daks2k3a4ib2z.cloudfront.net/placeholder/favicon.ico">
+'
 </head>
 <body class="w-clearfix">
 <?php include("./navigation.php");?>

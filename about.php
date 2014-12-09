@@ -25,7 +25,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
   <link rel="stylesheet" type="text/css" href="css/webflow.css">
   <link rel="stylesheet" type="text/css" href="css/happytweet.webflow.css">
   <script type="text/javascript" src="js/modernizr.js"></script>
-  <link rel="shortcut icon" type="image/x-icon" href="https://daks2k3a4ib2z.cloudfront.net/placeholder/favicon.ico">
+'
 </head>
 <body>
     <?php if($loggedin){ include("./navigation.php"); }?>

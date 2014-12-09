@@ -38,7 +38,7 @@ $stmt->execute(array(
 $numrows = $stmt->rowCount();
 
 if($numrows == 0){ //No such user, add to database and proceed.
-	$stmt = $db->prepare("INSERT INTO Users VALUES (?,?,?,?,0,0,NOW(),'0000-00-00',99999);");
+	$stmt = $db->prepare("INSERT INTO `Users` VALUES (?,?,?,?,0,0,NOW(),'0000-00-00','0');");
 	$stmt->execute(array(
 		$_SESSION['access_token']['user_id'],
 		$_SESSION['access_token']['oauth_token'],
@@ -52,14 +52,16 @@ if($numrows == 0){ //No such user, add to database and proceed.
 	if($truetoken != $_SESSION['access_token']['oauth_token'] ||
 		$truesecret != $_SESSION['access_token']['oauth_token_secret']){
 		//Token or secret doesn't match the one on the database.. Don't proceed.
-		unset($_SESSION['access_token']);
+		//DO that, and sync stops working.
+		//unset($_SESSION['access_token']);
 		header('Location: ./twitter_clearsessions.php');
 	}
 
 }
 /* Remove no longer needed request tokens */
-unset($_SESSION['oauth_token']);
-unset($_SESSION['oauth_token_secret']);
+//DO that, and sync stops working.
+//unset($_SESSION['oauth_token']);
+//unset($_SESSION['oauth_token_secret']);
 
 /* If HTTP response is 200 continue otherwise send to connect page to retry */
 if (200 == $connection->http_code) {

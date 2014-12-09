@@ -1,4 +1,4 @@
-function selectQuestion(element)  {
+function selectQuestion(element, text)  {
 
     var tabContents = document.getElementsByClassName('tabQuestionNumber');
 
@@ -9,7 +9,7 @@ function selectQuestion(element)  {
     element.style.backgroundColor = "#252A2F";
 
     var paragraph = document.getElementById("paragraph");
-    paragraph.innerHTML = element.id;
+    paragraph.innerHTML = text;
 }
 
 function selectRating(element)  {

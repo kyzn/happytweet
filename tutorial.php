@@ -19,25 +19,29 @@ $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 $setid = $row['SetID'];
 
-$stmt = $db->prepare("SELECT Tweet1, Tweet2, Tweet3, Tweet4, Tweet5, Tweet6, Tweet7, Tweet8, Tweet9, Tweet10 FROM Sets WHERE SetID=1");
+$stmt = $db->prepare("SELECT Tweet1, Tweet2, Tweet3, Tweet4, Tweet5, Tweet6, Tweet7, Tweet8, Tweet9, Tweet10 FROM Sets WHERE SetID=?");
 $stmt->execute(array($setid));
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-$tweetid[1]=$row['Tweet1'];
-$tweetid[2]=$row['Tweet2'];
-$tweetid[3]=$row['Tweet3'];
-$tweetid[4]=$row['Tweet4'];
-$tweetid[5]=$row['Tweet5'];
-$tweetid[6]=$row['Tweet6'];
-$tweetid[7]=$row['Tweet7'];
-$tweetid[8]=$row['Tweet8'];
-$tweetid[9]=$row['Tweet9'];
-$tweetid[10]=$row['Tweet10'];
+
+$tweetid = array();
+$tweettext = array();
+
+array_push($tweetid,$row['Tweet1']);
+array_push($tweetid,$row['Tweet2']);
+array_push($tweetid,$row['Tweet3']);
+array_push($tweetid,$row['Tweet4']);
+array_push($tweetid,$row['Tweet5']);
+array_push($tweetid,$row['Tweet6']);
+array_push($tweetid,$row['Tweet7']);
+array_push($tweetid,$row['Tweet8']);
+array_push($tweetid,$row['Tweet9']);
+array_push($tweetid,$row['Tweet10']);
 
 for($i=1;$i<11;$i++){
 	$stmt = $db->prepare("SELECT TweetText FROM Tweets WHERE TweetID=?");
 	$stmt->execute(array($tweetid[$i]));
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
-	$tweettext[$i]=$row['TweetText'];
+	array_push($tweettext,$row['TweetText']);
 }
 //got the tweets
 
@@ -62,17 +66,8 @@ function secondPassed() {
     document.getElementById('countdown').innerHTML = remainingSeconds;
     if (seconds == 0) {
         clearInterval(countdownTimer);
-        document.getElementById('countdown').innerHTML = "Time's up! Try again.";
-        document.getElementById("tweet1").style.display = 'none';
-        document.getElementById("tweet2").style.display = 'none';
-        document.getElementById("tweet3").style.display = 'none';
-        document.getElementById("tweet4").style.display = 'none';
-        document.getElementById("tweet5").style.display = 'none';
-        document.getElementById("tweet6").style.display = 'none';
-        document.getElementById("tweet7").style.display = 'none';
-        document.getElementById("tweet8").style.display = 'none';
-        document.getElementById("tweet9").style.display = 'none';
-        document.getElementById("tweet10").style.display = 'none';
+        document.getElementById('countdown').innerHTML = "";
+        document.getElementById('tweet_display').innerHTML = "Time's up!";
 
     } else {    
         seconds--;
@@ -80,11 +75,19 @@ function secondPassed() {
 }
 var countdownTimer = setInterval(secondPassed, 1000);
 
+var tweetNumber=1;
 
-function pointGiven(tweetnumber,point){
-	 document.getElementById("tweetnumber").style.display = 'none';
-	if($tweetnumber<11)
-		document.getElementById("tweetnumber").style.display = 'block';
+function pointGiven(){
+	 if(tweetNumber!=10){
+    tweetNumber++;
+    tweetText = "tweet"+tweetNumber;//<?php echo json_encode(array_shift($tweettext));?>;
+    document.getElementById("tweet_display").innerHTML =  tweetText;
+   }else{
+    document.getElementById("tweet_display").innerHTML = "Completed! Here's the results:";
+    clearInterval(countdownTimer);
+    document.getElementById('countdown').innerHTML = "";
+    document.getElementById('pointButtons').style.visibility = "hidden";
+   }
 }
 
 
@@ -112,7 +115,7 @@ if($loggedin){ header('Location: ./index.php');}
   <script type="text/javascript" src="js/modernizr.js"></script>
   <script type="text/javascript" src="js/tab.js"></script>
   <!--<script type="text/javascript" src="js/countdown.js"></script>-->
-  <link rel="shortcut icon" type="image/x-icon" href="https://daks2k3a4ib2z.cloudfront.net/placeholder/favicon.ico">
+'
 </head>
 <body class="w-clearfix">
 
@@ -120,23 +123,16 @@ if($loggedin){ header('Location: ./index.php');}
   <div class="w-container main">
   <p class="style">
   <span id="countdown" class="timer" style="font-size:30px"></span>
-  <?php $tweet=1; ?>
-  <br><label style="display:block;" id="tweet1" style="font-size:20px"><? echo "$tweettext[1]"; ?></label>
-  <br><label style="display:none;" id="tweet2" style="font-size:20px"><? echo "$tweettext[2]"; ?></label>
-  <br><label style="display:none;" id="tweet3" style="font-size:20px"><? echo "$tweettext[3]"; ?></label>
-  <br><label style="display:none;" id="tweet4" style="font-size:20px"><? echo "$tweettext[4]"; ?></label>
-  <br><label style="display:none;" id="tweet5" style="font-size:20px"><? echo "$tweettext[5]"; ?></label>
-  <br><label style="display:none;" id="tweet6" style="font-size:20px"><? echo "$tweettext[6]"; ?></label>
-  <br><label style="display:none;" id="tweet7" style="font-size:20px"><? echo "$tweettext[7]"; ?></label>
-  <br><label style="display:none;" id="tweet8" style="font-size:20px"><? echo "$tweettext[8]"; ?></label>
-  <br><label style="display:none;" id="tweet9" style="font-size:20px"><? echo "$tweettext[9]"; ?></label>
-  <br><label style="display:none;" id="tweet10" style="font-size:20px"><? echo "$tweettext[10]"; ?></label>
-	<button onclick="pointGiven(1,1)" id="point1" style="font-size:13px">Extremely Negative</button>
-	<button onclick="pointGiven(<?php echo $tweet;?>,2)" id="point2" style="font-size:13px">Negative</button>
-	<button onclick="pointGiven(<?php echo $tweet;?>,3)" id="point3" style="font-size:13px">Neutral</button>
-	<button onclick="pointGiven(<?php echo $tweet;?>,4)" id="point4" style="font-size:13px">Positive</button>
-	<button onclick="pointGiven(<?php echo $tweet;?>,5)" id="point5" style="font-size:13px">Extremely Positive</button>
-
+  <br><br>
+  <span id="tweet_display" style="font-size:20px"><? echo array_shift($tweettext); ?></span>
+  <br><br>
+  <div id="pointButtons" align="center" style="visibility:visible;" >
+  <button onclick="pointGiven()" id="point1" style="font-size:13px">Extremely Negative</button>
+	<button onclick="pointGiven()" id="point2" style="font-size:13px">Negative</button>
+	<button onclick="pointGiven()" id="point3" style="font-size:13px">Neutral</button>
+	<button onclick="pointGiven()" id="point4" style="font-size:13px">Positive</button>
+	<button onclick="pointGiven()" id="point5" style="font-size:13px">Extremely Positive</button>
+</div>
   </span>
 
 
