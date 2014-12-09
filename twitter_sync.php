@@ -42,6 +42,12 @@ if($LastSyncID) //Not the first sync, use last sync id.
 	'include_rts' => 'false',
 	'since_id' => $LastSyncID);
 else //First sync ever!
+
+//Since this is the first sync, we need to get the folllowers!
+include("./twitter_get_followers.php");
+
+
+//Then we continue with tweets.
 	$getarray=array('user_id' => $_SESSION['access_token']['user_id'],
 	'trim_user' => 'true',
 	'exclude_replies' => 'true',
