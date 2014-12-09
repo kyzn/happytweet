@@ -26,3 +26,4 @@ switch ($connection->http_code) {
     /* Show notification if something went wrong. */
     echo 'Could not connect to Twitter. Refresh the page or try again later.';
 }
+?>

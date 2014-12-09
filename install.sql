@@ -153,6 +153,15 @@ FOREIGN KEY(Word10)
 	ON UPDATE CASCADE
 )CHARACTER SET utf8 collate utf8_turkish_ci;
 
+CREATE TABLE IF NOT EXISTS Followers(
+FollowerID bigint NOT NULL,
+FollowedID bigint NOT NULL,
+FOREIGN KEY(FollowedID)
+	REFERENCES Users(UserID)
+	ON UPDATE CASCADE,
+PRIMARY KEY(FollowerID,FollowedID)
+)
+
 INSERT INTO Users VALUES (0,"NA","NA","NA",0,0,NOW(),'0000-00-00',0);
 INSERT INTO Words VALUES (0,"NA",0,0,0,0,0,NOW(),NOW());
-INSERT INTO Tweets VALUES (0,0,"NA",NOW(),NOW());
+INSERT INTO Tweets VALUES (0,0,"NA",NOW(),NOW(),0,0);
