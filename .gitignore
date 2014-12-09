@@ -172,6 +172,6 @@ local.properties
 
 twitter_config.php
 connection.php
-install.sql
+#install.sql
 misc/
 backup/
