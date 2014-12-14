@@ -3,14 +3,19 @@ function openResultScreen(){
 	document.location.href = "./resultscreen.php";
 }
 
-var seconds = 59;
+var seconds = 120;
 
 function countdown_timer() {
+
+	var remainingMinute = Math.floor(seconds / 60);
     var remainingSeconds = seconds % 60;
     if (remainingSeconds < 10) {
         remainingSeconds = "0" + remainingSeconds; 
     }
-    document.getElementById('play_paragraph').innerHTML = remainingSeconds;
+	if (remainingMinute < 10) {
+        remainingMinute = "0" + remainingMinute; 
+    }
+    document.getElementById('play_paragraph').innerHTML = remainingMinute + " : " + remainingSeconds;
     if (seconds == 0) {
         clearInterval(countdownTimer);
         document.getElementById('play_paragraph').innerHTML = "Time's up!";

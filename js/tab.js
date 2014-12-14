@@ -44,11 +44,25 @@ function createSpan()
 	tweetIndex++;
 }
 
+function makeWordsUnvisible(){
+
+	var myDiv = document.getElementById('wordSelection');
+	myDiv.style.visibility="hidden";
+}
+
+function makeWordsVisible(){
+
+	var myDiv = document.getElementById('wordSelection');
+	myDiv.style.visibility="visible";
+}
+
 //we show next tweet						
 function changeTweet(){
 
 	var paragraph = document.getElementById("paragraph");
 	paragraph.innerHTML = tweets[tweetIndex];	
+	
+	makeWordsUnvisible();
 }
 
 //selected emotion is added to the emoLink 
@@ -60,10 +74,19 @@ function setEmotion(str, element){
     }
     element.style.border = "thin solid green";
 	
+	if(str != "Neutral")
+		makeWordsVisible();
+		
 	emoLink = "emo="+str;
 	emoChanged = true;
-	if (strChanged) httpGet();
-
+	if (strChanged || str == "Neutral"){
+	
+		if(str == "Neutral")
+			strLink = "";
+			
+		httpGet();
+	}
+	
 }
 
 function resetEmotion(){

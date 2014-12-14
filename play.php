@@ -92,11 +92,12 @@ for($i=0;$i<10;$i++){
 
 	</nav>
 
-	<p id="selection_p">Click on the word which made you give that point!</p>
-	
-	<!--clikable words of tweets will be created in this div-->
-	<div id="tweetWords"></div>
-	
+	<div id="wordSelection">
+		<p id="selection_p">Click on the word which made you give that point!</p>
+		
+		<!--clikable words of tweets will be created in this div-->
+		<div id="tweetWords"></div>
+	</div>
 	<!-- tweets that we get from database will be sent to the javascript-->	
 	 <script type="text/javascript">	
 		var ar = <?php echo json_encode($tweettext) ?>;
