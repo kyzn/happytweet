@@ -1,19 +1,23 @@
-var max_time = 59;
-var cinterval;
- 
-function countdown_timer(){
-  // decrease timer
-  max_time--;
-  document.getElementById('play_paragraph').innerHTML = "00:" +  ((max_time < 10) ? '0' : '') + max_time;
-  if(max_time == 0){
-    openResultScreen();
-
-  }
-}
-// 1,000 means 1 second.
-cinterval = setInterval('countdown_timer()', 1000);
-
 function openResultScreen(){
 
-	document.location.href = "file:///home/nefise/Downloads/happytweet.webflow%20(2)/resultscreen.html";
+	document.location.href = "./resultscreen.php";
 }
+
+var seconds = 59;
+
+function countdown_timer() {
+    var remainingSeconds = seconds % 60;
+    if (remainingSeconds < 10) {
+        remainingSeconds = "0" + remainingSeconds; 
+    }
+    document.getElementById('play_paragraph').innerHTML = remainingSeconds;
+    if (seconds == 0) {
+        clearInterval(countdownTimer);
+        document.getElementById('play_paragraph').innerHTML = "Time's up!";
+		openResultScreen();
+
+    } else {    
+        seconds--;
+    }
+}
+var countdownTimer = setInterval(countdown_timer, 1000);
