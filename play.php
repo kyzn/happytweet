@@ -12,6 +12,36 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
 
 //Go away if not logged in.
 if(!$loggedin){ header('Location: ./index.php');}
+
+//Prepare the set here.
+
+//First ten sets are tutorial sets, and one will be randomly picked.
+$stmt = $db->prepare("SELECT SetID FROM Sets WHERE SetID<11 ORDER BY rand() LIMIT 1;");
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$setid = $row['SetID'];
+
+$stmt = $db->prepare("SELECT Tweet1, Tweet2, Tweet3, Tweet4, Tweet5, Tweet6, Tweet7, Tweet8, Tweet9, Tweet10 FROM Sets WHERE SetID=1");
+$stmt->execute(array($setid));
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$tweetid[0]=$row['Tweet1'];
+$tweetid[1]=$row['Tweet2'];
+$tweetid[2]=$row['Tweet3'];
+$tweetid[3]=$row['Tweet4'];
+$tweetid[4]=$row['Tweet5'];
+$tweetid[5]=$row['Tweet6'];
+$tweetid[6]=$row['Tweet7'];
+$tweetid[7]=$row['Tweet8'];
+$tweetid[8]=$row['Tweet9'];
+$tweetid[9]=$row['Tweet10'];
+
+
+for($i=0;$i<10;$i++){
+	$stmt = $db->prepare("SELECT TweetText FROM Tweets WHERE TweetID=?");
+	$stmt->execute(array($tweetid[$i]));
+	$row = $stmt->fetch(PDO::FETCH_ASSOC);
+	$tweettext[$i]=$row['TweetText'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -30,49 +60,48 @@ if(!$loggedin){ header('Location: ./index.php');}
   <script type="text/javascript" src="js/modernizr.js"></script>
   <script type="text/javascript" src="js/tab.js"></script>
   <script type="text/javascript" src="js/countdown.js"></script>
-'
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+
 </head>
 <body class="w-clearfix">
 <?php include("./navigation.php");?>
 
   <div class="w-container play_container">
+  
+    <!--counter-->
    	<div class="play_countdown">
 		<p id="play_paragraph"></p>
 	</div>
 	
-	<hr>	<nav>
-			<ul>
-				<li><a id="1" class="tabQuestionNumber" onclick="selectQuestion(this)">1</a></li>
-				<li><a id="2" class="tabQuestionNumber" onclick="selectQuestion(this)">2</a></li>
-				<li><a id="3" class="tabQuestionNumber" onclick="selectQuestion(this)">3</a></li>
-				<li><a id="4" class="tabQuestionNumber" onclick="selectQuestion(this)">4</a></li>
-				<li><a id="5" class="tabQuestionNumber" onclick="selectQuestion(this)">5</a></li>
-				<li><a id="6" class="tabQuestionNumber" onclick="selectQuestion(this)">6</a></li>
-				<li><a id="7" class="tabQuestionNumber" onclick="selectQuestion(this)">7</a></li>
-				<li><a id="8" class="tabQuestionNumber" onclick="selectQuestion(this)">8</a></li>
-				<li><a id="9" class="tabQuestionNumber" onclick="selectQuestion(this)">9</a></li>
-				<li><a id="10" class="tabQuestionNumber" onclick="selectQuestion(this)">10</a></li>
-			</ul>
-			<hr>	
-			<div class="play_paragraph">
-				<p id="paragraph">My tweet</p>
-			</div>
-		</nav>
+	<!--new tweet will be in here-->
+	<div class="play_paragraph">
+		<p id="paragraph"></p>
+	</div>
+  
 
 	<p id="rating_p">Which sentiment this tweet mostly has?</p>
 
 	<nav>
 		<ul id="sentiment">	
-			<li><a id="rating1" class="tabRating" onclick="selectRating(this)">Extremely Negative</a></li>
-			<li><a id="rating2" class="tabRating" onclick="selectRating(this)">Negative</a></li>
-			<li><a id="rating3" class="tabRating" onclick="selectRating(this)">Neutral</a></li>
-			<li><a id="rating4" class="tabRating" onclick="selectRating(this)">Positive</a></li>
-			<li><a id="rating5" class="tabRating" onclick="selectRating(this)">Extremely Positive</a></li>
+			<li><a id="rating1" class="tabRating" onclick="setEmotion('ExtremelyNegative', this)">Extremely Negative</a></li>
+			<li><a id="rating2" class="tabRating" onclick="setEmotion('Negative', this)">Negative</a></li>
+			<li><a id="rating3" class="tabRating" onclick="setEmotion('Neutral', this)">Neutral</a></li>
+			<li><a id="rating4" class="tabRating" onclick="setEmotion('Positive', this)">Positive</a></li>
+			<li><a id="rating5" class="tabRating" onclick="setEmotion('ExtremelyPositive', this)">Extremely Positive</a></li>
 		</ul>
 
 	</nav>
 
 	<p id="selection_p">Click on the word which made you give that point!</p>
+	
+	<!--clikable words of tweets will be created in this div-->
+	<div id="tweetWords"></div>
+	
+	<!-- tweets that we get from database will be sent to the javascript-->	
+	 <script type="text/javascript">	
+		var ar = <?php echo json_encode($tweettext) ?>;
+		getTweets(ar);
+	 </script>
   </div>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script type="text/javascript" src="js/webflow.js"></script>
