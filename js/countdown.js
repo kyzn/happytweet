@@ -3,7 +3,7 @@ function openResultScreen(){
 	document.location.href = "./resultscreen.php";
 }
 
-var seconds = 120;
+var seconds = 90;
 
 function countdown_timer() {
 
