@@ -12,7 +12,6 @@
 //selected word is added to the strLink 
 function setString(str, element){
 
-	alert(str);
 	var word = document.getElementById(element.id);
 	word.style.color = "blue";
 	
