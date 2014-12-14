@@ -82,7 +82,7 @@ function setEmotion(str, element){
 	if (strChanged || str == "Neutral"){
 	
 		if(str == "Neutral")
-			strLink = "";
+			strLink = "str=";
 			
 		httpGet();
 	}

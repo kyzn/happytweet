@@ -36,16 +36,22 @@ if(!$loggedin){ header('Location: ./index.php');}
 
   <div class="w-container result_container">
   
-	<p><?php echo $_SESSION['emo1'].'<br>'.$_SESSION['str1'].'<br>'.$_SESSION['time1'].'<hr>'
-				 .$_SESSION['emo2'].'<br>'.$_SESSION['str2'].'<br>'.$_SESSION['time2'].'<hr>'
-				 .$_SESSION['emo3'].'<br>'.$_SESSION['str3'].'<br>'.$_SESSION['time3'].'<hr>'
-				 .$_SESSION['emo4'].'<br>'.$_SESSION['str4'].'<br>'.$_SESSION['time4'].'<hr>'
-				 .$_SESSION['emo5'].'<br>'.$_SESSION['str5'].'<br>'.$_SESSION['time5'].'<hr>'
-				 .$_SESSION['emo6'].'<br>'.$_SESSION['str6'].'<br>'.$_SESSION['time6'].'<hr>'
-				 .$_SESSION['emo7'].'<br>'.$_SESSION['str7'].'<br>'.$_SESSION['time7'].'<hr>'
-				 .$_SESSION['emo8'].'<br>'.$_SESSION['str8'].'<br>'.$_SESSION['time8'].'<hr>'
-				 .$_SESSION['emo9'].'<br>'.$_SESSION['str9'].'<br>'.$_SESSION['time9'].'<hr>'
-				 .$_SESSION['emo10'].'<br>'.$_SESSION['str10'].'<br>'.$_SESSION['time10'].'<hr>'	?></p>
+	<p><?php
+	
+			for ($x = 1; $x <= 10; $x++) {
+			
+				if (isset($_SESSION['emo'.$x]))
+				{
+					echo $_SESSION['emo'.$x].'<br>'.$_SESSION['str'.$x].'<br>'.$_SESSION['time'.$x].'<hr>';
+					unset($_SESSION['emo'.$x]);
+					unset($_SESSION['str'.$x]);
+					unset($_SESSION['time'.$x]);
+				}
+				else{
+					echo $x." is not set<br>";
+				}
+			}
+	?></p>
 				 
     <p class="style"></p><a class="button resultscreen_button" href="play.html">Keep Playing!</a>
   </div>
