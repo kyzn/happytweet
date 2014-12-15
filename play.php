@@ -12,16 +12,73 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
 
 //Go away if not logged in.
 if(!$loggedin){ header('Location: ./index.php');}
+//DEBUG
+echo "user ".$_SESSION['access_token']['user_id']." ";
+//Prepare the set here:
 
-//Prepare the set here.
+//First method: In the plays that are waiting for a match, bring random one of them that I did not play before.
+$stmt = $db->prepare("SELECT P1.UserID,P1.SetID FROM Plays AS P1
+WHERE P1.UserID!= ?
+AND P1.MatchWith= 0
+AND NOT EXISTS (
+	SELECT P2.SetID FROM Plays AS P2
+	WHERE P2.UserID = ?
+	AND P1.SetID = P2.SetID)
+ORDER BY rand() LIMIT 1;");
 
-//First ten sets are tutorial sets, and one will be randomly picked.
-$stmt = $db->prepare("SELECT SetID FROM Sets WHERE SetID<11 ORDER BY rand() LIMIT 1;");
-$stmt->execute();
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
-$setid = $row['SetID'];
+$stmt->execute(array($_SESSION['access_token']['user_id'],$_SESSION['access_token']['user_id']));
+$numrows = $stmt->rowCount();
 
-$stmt = $db->prepare("SELECT Tweet1, Tweet2, Tweet3, Tweet4, Tweet5, Tweet6, Tweet7, Tweet8, Tweet9, Tweet10 FROM Sets WHERE SetID=1");
+if($numrows == 0){ //No such set! Gonna try the second method.
+
+	//Second method: In the all sets, bring one I did not solve yet.
+	$stmt = $db->prepare("SELECT S1.SetID FROM Sets AS S1
+	WHERE NOT EXISTS(
+		SELECT P1.SetID FROM Plays AS P1
+		WHERE P1.SetID = S1.SetID
+		AND P1.UserID = ?)
+	ORDER BY rand() LIMIT 1;");
+	$stmt->execute(array($_SESSION['access_token']['user_id']));
+	$numrows = $stmt->rowCount();
+
+	if($numrows == 0){
+		//Seems like user played all sets already..
+		header('Location: ./index.php');
+		//TODO: This will be replaced by set creation
+	}else{
+	//Second method worked.. 
+	$row = $stmt->fetch(PDO::FETCH_ASSOC);
+	$setid = $row['SetID'];
+	//DEBUG
+	echo "method 2 set $setid ";
+
+	//Insert the game about to start to the database.
+	$stmt = $db->prepare("INSERT INTO Plays (UserID, SetID, PlayedOn) VALUES (?,?, NOW());");	
+	$stmt->execute(array($_SESSION['access_token']['user_id'],$setid));
+	}
+
+}else{
+	//DEBUG
+	echo "method 1 ";
+	//First method worked! Continue with this set.
+	$row = $stmt->fetch(PDO::FETCH_ASSOC);
+	$setid = $row['SetID'];
+	$matchid = $row['UserID'];
+	//DEBUG
+	echo "set $setid matchwith $matchid ";
+
+	//Update the matched row, ie. mark as "matched" so that noone else matches that.
+	$stmt = $db->prepare("UPDATE Plays SET MatchWith=? WHERE UserID=? AND SetID=?;");
+	$stmt->execute(array($_SESSION['access_token']['user_id'],$matchid,$setid));
+	//Insert the game about to start to the database.
+	$stmt = $db->prepare("INSERT INTO Plays (UserID, MatchWith, SetID, PlayedOn) VALUES (?,?,?,NOW())");
+	$stmt->execute(array($_SESSION['access_token']['user_id'],$matchid,$setid));
+}
+
+//We got the set.
+
+
+$stmt = $db->prepare("SELECT Tweet1, Tweet2, Tweet3, Tweet4, Tweet5, Tweet6, Tweet7, Tweet8, Tweet9, Tweet10 FROM Sets WHERE SetID=?");
 $stmt->execute(array($setid));
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 $tweetid[0]=$row['Tweet1'];

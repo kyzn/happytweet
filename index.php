@@ -54,41 +54,6 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
   <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
 
 
-<?php
-
-
-/* If access tokens are not available redirect to connect page. */
-if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_token']) || empty($_SESSION['access_token']['oauth_token_secret'])) {
-    //header('Location: ./twitter_clearsessions.php');
-}
-/* Get user access tokens out of the session. */
-$access_token = $_SESSION['access_token'];
-
-
-/* If method is set change API call made. Test is called by default. */
-//TODO Fill the content with useful info.
-//$content = $connection->get('account/verify_credentials');
-$content=$_SESSION['access_token'];
-
-/* Create a TwitterOauth object with consumer/user tokens. */
-$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']);
-
-/*get timeline*/
-/*$content=$connection->get('statuses/user_timeline',array(
-  'user_id' => $_SESSION['access_token']['user_id'],
-  'trim_user' => 'true',
-  'exclude_replies' => 'true',
-  'include_rts' => 'false',
-  'since_id' => '99999'
-  ));*/
-
-
-//$content=$connection->get('users/show', array('screen_name' => 'kyzn'));
-
-/* Include HTML to display on the page */
-        print_r($content); ?>
-
-
 
 
 </body>
