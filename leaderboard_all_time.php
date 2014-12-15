@@ -14,7 +14,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
 if(!$loggedin){ header('Location: ./index.php');}
 
 
-$stmt = $db->prepare("SELECT UserID,WeeklyPoint,TotalPoint FROM Users ORDER BY TotalPoint DESC LIMIT 5");
+$stmt = $db->prepare("SELECT ScreenName,WeeklyPoint,TotalPoint FROM Users ORDER BY TotalPoint DESC LIMIT 5");
 $stmt->execute();
 
 
@@ -42,7 +42,7 @@ $stmt->execute();
     <table style="width:100%">
 	  <tr class="titles">
 	    <th>Rank</th>
-	    <th>Twitter ID</th>
+	    <th>Screen Name</th>
 	    <th>Last Week Points</th>
 	    <th>Total Points</th>
 	  </tr>  
@@ -52,7 +52,7 @@ $stmt->execute();
 		   while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			   echo "<tr>";
 			   echo "<td>".$index."</td>";
-			   echo "<td>".$row['UserID']."</td>";
+			   echo "<td>".$row['ScreenName']."</td>";
 			   echo "<td>".$row['WeeklyPoint']."</td>";
 			   echo "<td>".$row['TotalPoint']."</td>";
 			   echo "</tr>";
