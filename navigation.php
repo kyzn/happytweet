@@ -14,6 +14,7 @@
 					<li><a href="./leaderboard_last_week.php">Last Week</a></li>
 				</ul>
 			</li>
+			<li><a href="./word_emotions.php">Word Emotions</a></li>
 			<li><a href="./about.php">About</a></li>
 			<li><a href="./twitter_clearsessions.php">Log Out</a></li>
 		</ul>
