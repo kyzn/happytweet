@@ -14,10 +14,10 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
 if(!$loggedin){ header('Location: ./index.php');}
 
 
-$stmt = $db->prepare("SELECT Plays.PlayedOn, Plays.EndPoint, Plays.BonusPoint, Plays.MatchPoint, Users.TotalPoint 
-						FROM Plays INNER JOIN Users ON Plays.UserID = Users.UserID 
-							WHERE Users.UserID = '1905276726' ORDER BY Plays.PlayedOn");
+$stmt = $db->prepare("SELECT UserID,WeeklyPoint,TotalPoint FROM Users ORDER BY TotalPoint DESC LIMIT 5");
 $stmt->execute();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -39,27 +39,22 @@ $stmt->execute();
 <?php include("./navigation.php");?>
 
   <div class="w-container mygames_container">
-    <p id= "total_point">My total point:</p>
-    <a class="share mygames_share_score" href="#">Share My Score</a>
-    <a class="share mygames_share_rank" href="#">Share My Rank</a><br>
     <table style="width:100%">
 	  <tr class="titles">
-	    <th>Date Time</th>
-	    <th>End Game Point</th>
-	    <th>Bonus Point</th>
-	    <th>Match Point</th>
-	    <th>Total Point</th>
-	  </tr>
-	  
-	  <?php
-
+	    <th>Rank</th>
+	    <th>Twitter ID</th>
+	    <th>Last Week Points</th>
+	    <th>Total Points</th>
+	  </tr>  
+		<?php
+		
+		   $index = 1;
 		   while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 			   echo "<tr>";
-			   echo "<td>".$row['Plays.PlayedOn']."</td>";
-			   echo "<td>".$row['Plays.EndPoint']."</td>";
-			   echo "<td>".$row['Plays.BonusPoint']."</td>";
-			   echo "<td>".$row['Plays.MatchPoint']."</td>";
-			   echo "<td>".$row['Users.TotalPoint']."</td>";
+			   echo "<td>".$index."</td>";
+			   echo "<td>".$row['UserID']."</td>";
+			   echo "<td>".$row['WeeklyPoint']."</td>";
+			   echo "<td>".$row['TotalPoint']."</td>";
 			   echo "</tr>";
 			   $index++;
 		   }

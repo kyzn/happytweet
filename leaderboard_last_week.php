@@ -12,6 +12,10 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
 
 //Go away if not logged in.
 if(!$loggedin){ header('Location: ./index.php');}
+
+
+$stmt = $db->prepare("SELECT UserID,WeeklyPoint,TotalPoint FROM Users ORDER BY WeeklyPoint DESC LIMIT 5");
+$stmt->execute();
 ?>
 
 <!DOCTYPE html>
@@ -40,6 +44,20 @@ if(!$loggedin){ header('Location: ./index.php');}
 	    <th>Last Week Points</th>
 	    <th>Total Points</th>
 	  </tr>
+	  		<?php
+		
+		   $index = 1;
+		   while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			   echo "<tr>";
+			   echo "<td>".$index."</td>";
+			   echo "<td>".$row['UserID']."</td>";
+			   echo "<td>".$row['WeeklyPoint']."</td>";
+			   echo "<td>".$row['TotalPoint']."</td>";
+			   echo "</tr>";
+			   $index++;
+		   }
+
+		?>
    </table>
   </div>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>

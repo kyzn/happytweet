@@ -10,8 +10,8 @@
 			</li>
 			<li><a href="#">Leaderboard</a>
 				<ul>
-					<li><a href="./leaderboard.php">All Time</a></li>
-					<li><a href="./leaderboard.php">Last Week</a></li>
+					<li><a href="./leaderboard_all_time.php">All Time</a></li>
+					<li><a href="./leaderboard_last_week.php">Last Week</a></li>
 				</ul>
 			</li>
 			<li><a href="./about.php">About</a></li>
