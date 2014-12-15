@@ -37,6 +37,70 @@ if(!$loggedin){ header('Location: ./index.php');}
   <div class="w-container result_container">
   
 	<p><?php
+
+		//emo1..10 str1..10 time10 elimde.
+
+		//a) emo1..10'u Plays userid setid verip kaydet.
+		$userid = $_SESSION['access_token']['user_id'];
+		$setid = $_SESSION['setid'];
+		if(isset($_SESSION['matchid'])) $matchid=$_SESSION['matchid'];
+
+		//DEBUG
+		echo "user $userid set $setid match $matchid scores "; 
+		for ($x = 1; $x <= 10; $x++) echo $_SESSION['emo'.$x].' ';
+		echo " words ";
+		for ($x = 1; $x <= 10; $x++) echo $_SESSION['str'.$x].' ';
+
+
+		$stmt = $db->prepare("UPDATE Plays SET Vote1=?, Vote2=?, Vote3=?, Vote4=?,
+		Vote5=?, Vote6=?, Vote7=?, Vote8=?, Vote9=?, Vote10=? WHERE UserID=? AND SetID=?;");
+		$stmt->execute(array(
+			$_SESSION['emo1'],
+			$_SESSION['emo2'],
+			$_SESSION['emo3'],
+			$_SESSION['emo4'],
+			$_SESSION['emo5'],
+			$_SESSION['emo6'],
+			$_SESSION['emo7'],
+			$_SESSION['emo8'],
+			$_SESSION['emo9'],
+			$_SESSION['emo10'],
+			$userid,
+			$setid
+			));
+
+		//b) her bir word için: words tablosunda olup olmadığını kontrol et
+		//	varsa verilen voteun puanını increment et, wordün idsini çek
+		//	yoksa words tablosuna verilen vote=1 diye ekle, idsini getir
+
+		for ($x = 1; $x <= 10; $x++) {
+			if($_SESSION['emo'.$x]!=3){
+				$stmt = $db->prepare("SELECT WordID FROM Words WHERE WordText=?");
+				$stmt->execute(array($_SESSION['str'.$x]));
+				
+
+
+
+
+			}
+		}
+
+
+		//c) geriye çektiğim word idlerini play tablosunda wordlere ekle
+
+		//d) eğer eşleşme ise:
+		//	eşlenilen oyunun puanlarını ve kelimelerini getir.
+		//	exact vote match +3pts
+		//	close vote match +1pts
+		//	if vote!=3 word match +5pts
+		//	bunları topla, matchpoint olarak belirle.
+		//	Her iki kullanıcının oyununun da matchpoint verisini güncelle
+		//	Her iki kullanıcının da weeklypoint ve totalpoint verilerini güncelle
+
+		//e) Bonus şimdilik 0, endpoint = kalansüre *2 şeklinde plays tablosunu güncelle
+		//	kullanıcının weeklypoint ve totalpoint verilerini de güncelle.
+
+
 	
 			for ($x = 1; $x <= 10; $x++) {
 			

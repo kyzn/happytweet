@@ -114,6 +114,7 @@ EndPoint int DEFAULT 0 NOT NULL,
 BonusPoint int DEFAULT 0 NOT NULL,
 MatchPoint int DEFAULT NULL,
 MatchWith int DEFAULT 0 NOT NULL,
+PlayedOn DateTime NOT NULL,
 PRIMARY KEY(UserID,SetID),
 FOREIGN KEY(UserID)
 	REFERENCES Users(UserID)

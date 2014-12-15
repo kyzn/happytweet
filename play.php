@@ -49,6 +49,7 @@ if($numrows == 0){ //No such set! Gonna try the second method.
 	//Second method worked.. 
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
 	$setid = $row['SetID'];
+	$_SESSION['setid']=$setid;
 	//DEBUG
 	echo "method 2 set $setid ";
 
@@ -63,7 +64,9 @@ if($numrows == 0){ //No such set! Gonna try the second method.
 	//First method worked! Continue with this set.
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
 	$setid = $row['SetID'];
+	$_SESSION['setid']=$setid;
 	$matchid = $row['UserID'];
+	$_SESSION['matchid']=$matchid;
 	//DEBUG
 	echo "set $setid matchwith $matchid ";
 
