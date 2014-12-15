@@ -53,7 +53,7 @@ if(!$loggedin){ header('Location: ./index.php');}
 			}
 	?></p>
 				 
-    <p class="style"></p><a class="button resultscreen_button" href="play.html">Keep Playing!</a>
+    <p class="style"></p><a class="button resultscreen_button" href="play.php">Keep Playing!</a>
   </div>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script type="text/javascript" src="js/webflow.js"></script>

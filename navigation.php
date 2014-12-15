@@ -2,7 +2,7 @@
 	<nav>
 		<ul class= "nav_bar">
 			<li><a href="./play.php">Play</a></li>
-			<li><a href="./profile.php">Profile</a>
+			<li><a href="#">Profile</a>
 				<ul>
 					<li><a href="./mygames.php">MyGames</a></li>
 					<li><a href="./myhappiness.php">MyHappiness</a></li>

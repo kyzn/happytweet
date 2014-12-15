@@ -74,14 +74,14 @@ function setEmotion(str, element){
     }
     element.style.border = "thin solid green";
 	
-	if(str != "Neutral")
+	if(str != '3')
 		makeWordsVisible();
 		
 	emoLink = "emo="+str;
 	emoChanged = true;
-	if (strChanged || str == "Neutral"){
+	if (strChanged || str == '3'){
 	
-		if(str == "Neutral")
+		if(str == '3')
 			strLink = "str=";
 			
 		httpGet();

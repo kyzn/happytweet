@@ -83,11 +83,11 @@ for($i=0;$i<10;$i++){
 
 	<nav>
 		<ul id="sentiment">	
-			<li><a id="rating1" class="tabRating" onclick="setEmotion('ExtremelyNegative', this)">Extremely Negative</a></li>
-			<li><a id="rating2" class="tabRating" onclick="setEmotion('Negative', this)">Negative</a></li>
-			<li><a id="rating3" class="tabRating" onclick="setEmotion('Neutral', this)">Neutral</a></li>
-			<li><a id="rating4" class="tabRating" onclick="setEmotion('Positive', this)">Positive</a></li>
-			<li><a id="rating5" class="tabRating" onclick="setEmotion('ExtremelyPositive', this)">Extremely Positive</a></li>
+			<li><a id="rating1" class="tabRating" onclick="setEmotion('1', this)">Extremely Negative</a></li>
+			<li><a id="rating2" class="tabRating" onclick="setEmotion('2', this)">Negative</a></li>
+			<li><a id="rating3" class="tabRating" onclick="setEmotion('3', this)">Neutral</a></li>
+			<li><a id="rating4" class="tabRating" onclick="setEmotion('4', this)">Positive</a></li>
+			<li><a id="rating5" class="tabRating" onclick="setEmotion('5', this)">Extremely Positive</a></li>
 		</ul>
 
 	</nav>
