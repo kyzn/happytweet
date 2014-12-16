@@ -43,8 +43,8 @@ if($numrows == 0){ //No such set! Gonna try the second method.
 
 	if($numrows == 0){
 		//Seems like user played all sets already..
-		header('Location: ./index.php');
-		//TODO: This will be replaced by set creation
+		//Go create brand new sets!
+		header('Location: ./createset.php?p=lI73hdf82jA8f');
 	}else{
 	//Second method worked.. 
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
