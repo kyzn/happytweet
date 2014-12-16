@@ -36,29 +36,40 @@ if(!$loggedin){ header('Location: ./index.php');}
 
   <div class="w-container result_container">
   
-	<p><?php
+	<?php
 
 		//emo1..10 str1..10 time10 elimde.
 
 		//a) emo1..10'u Plays userid setid verip kaydet.
 		$userid = $_SESSION['access_token']['user_id'];
+
 		$setid = $_SESSION['setid'];
-		if(isset($_SESSION['matchid'])) $matchid=$_SESSION['matchid']; else $matchid=-1;
+		unset($_SESSION['setid']);
+
+		if(isset($_SESSION['matchid'])){
+			$matchid=$_SESSION['matchid']; 
+			unset($_SESSION['matchid']);
+		}else{
+			$matchid=-1;
+		} 
 
 		//DEBUG
-		echo "user $userid set $setid match $matchid ";
+		//echo "user $userid set $setid match $matchid ";
 		$emo = $_SESSION['emo'];
 		$str = $_SESSION['str'];
 		$time = $_SESSION['time'][10];
+		list($min,$sec) =explode(" : ",$time);
+		$time=60*$min+$sec;
 
 		unset($_SESSION['emo']);
 		unset($_SESSION['str']);
 		unset($_SESSION['time']);
 
-		echo " scores ";
-		for ($x = 1; $x <= 10; $x++) echo $emo[$x].' ';
-		echo " words ";
-		for ($x = 1; $x <= 10; $x++) echo $str[$x].' ';
+		//DEBUG
+		//echo " scores ";
+		//for ($x = 1; $x <= 10; $x++) echo $emo[$x].' ';
+		//echo " words ";
+		//for ($x = 1; $x <= 10; $x++) echo $str[$x].' ';
 
 
 		$stmt = $db->prepare("UPDATE Plays SET Vote1=?, Vote2=?, Vote3=?, Vote4=?,
@@ -111,8 +122,9 @@ if(!$loggedin){ header('Location: ./index.php');}
 
 		for ($x = 1; $x <= 10; $x++) if ($wordid[$x]=="") $wordid[$x]=1;
 
-		echo "wordids ";
-		for ($x = 1; $x <= 10; $x++) echo $wordid[$x]." ";
+		//DEBUG
+		//echo "wordids ";
+		//for ($x = 1; $x <= 10; $x++) echo $wordid[$x]." ";
 
 		$stmt = $db->prepare("UPDATE Plays SET Word1=?, Word2=?, Word3=?, Word4=?,
 		Word5=?, Word6=?, Word7=?, Word8=?, Word9=?, Word10=? WHERE UserID=? AND SetID=?;");
@@ -150,16 +162,18 @@ if(!$loggedin){ header('Location: ./index.php');}
 			for ($x=1; $x<=10; $x++) $wordid_m[$x]=$row['Word'.$x];
 			for ($x=1; $x<=10; $x++) $emo_m[$x]=$row['Vote'.$x];
 
-			echo "match votes ";
-			for ($x = 1; $x <= 10; $x++) echo $emo_m[$x].' ';
-			echo "match words ";
-			for ($x = 1; $x <= 10; $x++) echo $wordid_m[$x].' ';
+			//DEBUG
+			//echo "match votes ";
+			//for ($x = 1; $x <= 10; $x++) echo $emo_m[$x].' ';
+			//echo "match words ";
+			//for ($x = 1; $x <= 10; $x++) echo $wordid_m[$x].' ';
 
 
 
 			$matchpoint=0;
 		
-			echo "match votes ";
+			//DEBUG
+			//echo "match votes ";
 
 			for ($x = 1; $x <= 10; $x++) {
 
@@ -167,69 +181,84 @@ if(!$loggedin){ header('Location: ./index.php');}
 				
 				if($emo_diff==0){
 					$matchpoint+=3;
-					echo "+3 ";
+					//DEBUG
+					//echo "+3 ";
 				}else if($emo_diff==1){
 					$matchpoint+=1;
-					echo "+1 ";
+					//DEBUG
+					//echo "+1 ";
 				}else{
-					echo "+0 ";
+					//DEBUG
+					//echo "+0 ";
 				}
 
 			}
 			
-			echo "match words ";
+			//DEBUG
+			//echo "match words ";
 			
 			for($x=1;$x<=10;$x++){
 				
 				if($emo[$x]==3){ //no word match possible for neutral votes
-					echo "na ";
+					//DEBUG
+					//echo "na ";
 				}else{
 					if($wordid[$x]==$wordid_m[$x]){
-						echo "+5 ";
+						//DEBUG
+						//echo "+5 ";
 						$matchpoint+=5;
 					}else{
-						echo "+0";
+						//DEBUG
+						//echo "+0";
 					}
 				}
 			}
 
+			//DEBUG
+			//echo " matchpoint $matchpoint ";
 
 			//Matchpoint is set at this point.
-			//TODO Update plays&users table with matchpoint.
 
+			//Update Plays.MatchPoint
+			$stmt=$db->prepare("UPDATE Plays SET MatchPoint = ? WHERE SetID = ? AND (UserID = ? OR UserID = ?);");
+			$stmt->execute(array($matchpoint,$setid,$userid,$matchid));
 
+			//Increment user points by matchpoint
+			$stmt=$db->prepare("UPDATE Users SET WeeklyPoint = WeeklyPoint+?, TotalPoint = TotalPoint+? WHERE (UserID = ? OR UserID = ?);");
+			$stmt->execute(array($matchpoint,$matchpoint,$userid,$matchid));
 
 
 		}
 
 
-
-
-
-
-
 		//e) Bonus şimdilik 0, endpoint = kalansüre *2 şeklinde plays tablosunu güncelle
 		//	kullanıcının weeklypoint ve totalpoint verilerini de güncelle.
 
+		
+		$bonuspoint = 0; //TODO: Set up bonus mechanism
+		$endpoint = $time *2;
+		$exceptmatchpoint = $bonuspoint+$endpoint;//to be used in sql statement
+		$totalpoint = $bonuspoint+$endpoint+$matchpoint;
+		
+		//DEBUG
+		//echo " time $time endpoint $endpoint bonuspoint $bonuspoint exceptmatchpoint $exceptmatchpoint ";
+		
+		//Update Plays.EndPoint & BonusPoint
+		$stmt=$db->prepare("UPDATE Plays SET EndPoint = ?, BonusPoint = ? WHERE SetID = ? AND UserID = ?;");
+		$stmt->execute(array($endpoint,$bonuspoint,$setid,$userid));
 
-	/*
-			for ($x = 1; $x <= 10; $x++) {
-			
-				if (isset($_SESSION['emo'.$x]))
-				{
-					echo $_SESSION['emo'.$x].'<br>'.$_SESSION['str'.$x].'<br>'.$_SESSION['time'.$x].'<hr>';
-					unset($_SESSION['emo'.$x]);
-					unset($_SESSION['str'.$x]);
-					unset($_SESSION['time'.$x]);
-				}
-				else{
-					echo $x." is not set<br>";
-				}
-			}
-	*/
-	?></p>
-				 
-    <p class="style"></p><a class="button resultscreen_button" href="play.php">Keep Playing!</a>
+		//Increment user points by endpoint+bonuspoint
+		$stmt=$db->prepare("UPDATE Users SET WeeklyPoint = WeeklyPoint+?, TotalPoint = TotalPoint+? WHERE UserID = ?;");
+		$stmt->execute(array($exceptmatchpoint,$exceptmatchpoint,$userid));
+
+		echo "<center><br>You have collected ".$totalpoint." points!<br>";
+		echo "End of game points: $endpoint<br>";
+		if($bonuspoint!=0) echo "Bonus points: $bonuspoint<br>";
+		if($matchid!=-1) echo "Aggreement points: $matchpoint<br>";
+		echo "</center>";
+
+	?>
+	<a class="button resultscreen_button" href="play.php">Keep Playing!</a>
   </div>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script type="text/javascript" src="js/webflow.js"></script>
