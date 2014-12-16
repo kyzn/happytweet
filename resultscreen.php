@@ -43,28 +43,37 @@ if(!$loggedin){ header('Location: ./index.php');}
 		//a) emo1..10'u Plays userid setid verip kaydet.
 		$userid = $_SESSION['access_token']['user_id'];
 		$setid = $_SESSION['setid'];
-		if(isset($_SESSION['matchid'])) $matchid=$_SESSION['matchid'];
+		if(isset($_SESSION['matchid'])) $matchid=$_SESSION['matchid']; else $matchid=-1;
 
 		//DEBUG
-		echo "user $userid set $setid match $matchid scores "; 
-		for ($x = 1; $x <= 10; $x++) echo $_SESSION['emo'.$x].' ';
+		echo "user $userid set $setid match $matchid ";
+		$emo = $_SESSION['emo'];
+		$str = $_SESSION['str'];
+		$time = $_SESSION['time'][10];
+
+		unset($_SESSION['emo']);
+		unset($_SESSION['str']);
+		unset($_SESSION['time']);
+
+		echo " scores ";
+		for ($x = 1; $x <= 10; $x++) echo $emo[$x].' ';
 		echo " words ";
-		for ($x = 1; $x <= 10; $x++) echo $_SESSION['str'.$x].' ';
+		for ($x = 1; $x <= 10; $x++) echo $str[$x].' ';
 
 
 		$stmt = $db->prepare("UPDATE Plays SET Vote1=?, Vote2=?, Vote3=?, Vote4=?,
 		Vote5=?, Vote6=?, Vote7=?, Vote8=?, Vote9=?, Vote10=? WHERE UserID=? AND SetID=?;");
 		$stmt->execute(array(
-			$_SESSION['emo1'],
-			$_SESSION['emo2'],
-			$_SESSION['emo3'],
-			$_SESSION['emo4'],
-			$_SESSION['emo5'],
-			$_SESSION['emo6'],
-			$_SESSION['emo7'],
-			$_SESSION['emo8'],
-			$_SESSION['emo9'],
-			$_SESSION['emo10'],
+			$emo[1],
+			$emo[2],
+			$emo[3],
+			$emo[4],
+			$emo[5],
+			$emo[6],
+			$emo[7],
+			$emo[8],
+			$emo[9],
+			$emo[10],
 			$userid,
 			$setid
 			));
@@ -74,19 +83,54 @@ if(!$loggedin){ header('Location: ./index.php');}
 		//	yoksa words tablosuna verilen vote=1 diye ekle, idsini getir
 
 		for ($x = 1; $x <= 10; $x++) {
-			if($_SESSION['emo'.$x]!=3){
+			if($emo[$x]!=3){
 				$stmt = $db->prepare("SELECT WordID FROM Words WHERE WordText=?");
-				$stmt->execute(array($_SESSION['str'.$x]));
-				
+				$stmt->execute(array($str[$x]));
+				$numrows = $stmt->rowCount();
+				if($numrows==0){//Word is going to be added for the first time
+					$stmt = $db->prepare("INSERT INTO Words (WordText, Vote".$emo[$x]."Count, CreatedOn, LastVoteOn) VALUES (?,1,NOW(),NOW());");
+					$stmt -> execute(array($str[$x]));
+					$stmt = $db->prepare("SELECT WordID FROM Words WHERE WordText=?");
+					$stmt -> execute(array($str[$x]));
+					$row = $stmt->fetch(PDO::FETCH_ASSOC);
+					$wordid[$x] = $row['WordID'];
+				}
+				else{
+					$row = $stmt->fetch(PDO::FETCH_ASSOC);
+					$wordid[$x] = $row['WordID'];
+					$stmt = $db->prepare("UPDATE Words SET Vote".$emo[$x]."Count = Vote".$emo[$x]."Count+1, LastVoteOn = NOW() WHERE WordID = ?;");
+					$stmt -> execute(array($wordid[$x]));
 
-
-
+				}
 
 			}
 		}
 
 
 		//c) geriye çektiğim word idlerini play tablosunda wordlere ekle
+
+		for ($x = 1; $x <= 10; $x++) if ($wordid[$x]=="") $wordid[$x]=1;
+
+		echo "wordids ";
+		for ($x = 1; $x <= 10; $x++) echo $wordid[$x]." ";
+
+		$stmt = $db->prepare("UPDATE Plays SET Word1=?, Word2=?, Word3=?, Word4=?,
+		Word5=?, Word6=?, Word7=?, Word8=?, Word9=?, Word10=? WHERE UserID=? AND SetID=?;");
+		$stmt->execute(array(
+			$wordid[1],
+			$wordid[2],
+			$wordid[3],
+			$wordid[4],
+			$wordid[5],
+			$wordid[6],
+			$wordid[7],
+			$wordid[8],
+			$wordid[9],
+			$wordid[10],
+			$userid,
+			$setid
+			));
+
 
 		//d) eğer eşleşme ise:
 		//	eşlenilen oyunun puanlarını ve kelimelerini getir.
@@ -97,11 +141,78 @@ if(!$loggedin){ header('Location: ./index.php');}
 		//	Her iki kullanıcının oyununun da matchpoint verisini güncelle
 		//	Her iki kullanıcının da weeklypoint ve totalpoint verilerini güncelle
 
+		if($matchid!=-1){
+
+			$stmt=$db->prepare("SELECT * FROM Plays WHERE UserID=? AND SetID=?");
+			$stmt->execute(array($matchid,$setid));
+			$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			for ($x=1; $x<=10; $x++) $wordid_m[$x]=$row['Word'.$x];
+			for ($x=1; $x<=10; $x++) $emo_m[$x]=$row['Vote'.$x];
+
+			echo "match votes ";
+			for ($x = 1; $x <= 10; $x++) echo $emo_m[$x].' ';
+			echo "match words ";
+			for ($x = 1; $x <= 10; $x++) echo $wordid_m[$x].' ';
+
+
+
+			$matchpoint=0;
+		
+			echo "match votes ";
+
+			for ($x = 1; $x <= 10; $x++) {
+
+				$emo_diff=abs($emo[$x] - $emo_m[$x]);
+				
+				if($emo_diff==0){
+					$matchpoint+=3;
+					echo "+3 ";
+				}else if($emo_diff==1){
+					$matchpoint+=1;
+					echo "+1 ";
+				}else{
+					echo "+0 ";
+				}
+
+			}
+			
+			echo "match words ";
+			
+			for($x=1;$x<=10;$x++){
+				
+				if($emo[$x]==3){ //no word match possible for neutral votes
+					echo "na ";
+				}else{
+					if($wordid[$x]==$wordid_m[$x]){
+						echo "+5 ";
+						$matchpoint+=5;
+					}else{
+						echo "+0";
+					}
+				}
+			}
+
+
+			//Matchpoint is set at this point.
+			//TODO Update plays&users table with matchpoint.
+
+
+
+
+		}
+
+
+
+
+
+
+
 		//e) Bonus şimdilik 0, endpoint = kalansüre *2 şeklinde plays tablosunu güncelle
 		//	kullanıcının weeklypoint ve totalpoint verilerini de güncelle.
 
 
-	
+	/*
 			for ($x = 1; $x <= 10; $x++) {
 			
 				if (isset($_SESSION['emo'.$x]))
@@ -115,6 +226,7 @@ if(!$loggedin){ header('Location: ./index.php');}
 					echo $x." is not set<br>";
 				}
 			}
+	*/
 	?></p>
 				 
     <p class="style"></p><a class="button resultscreen_button" href="play.php">Keep Playing!</a>
