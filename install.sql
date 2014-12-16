@@ -22,6 +22,7 @@ TweetTime datetime NOT NULL,
 CreatedOn datetime NOT NULL,
 TotalVote bigint DEFAULT 0 NOT NULL,
 VoteCount int DEFAULT 0 NOT NULL,
+InSets int DEFAULT 0 NOT NULL,
 FOREIGN KEY (UserID)
 	REFERENCES Users(UserID)
 	ON UPDATE CASCADE
