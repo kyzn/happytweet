@@ -35,10 +35,14 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
 
 
     <?php if($loggedin){ ?> 
-<p class="style"><span>Start playing instantly by clicking play above.</span><br><br></p>
+<p class="style"><span>
+<?php echo "user ".$_SESSION['access_token']['user_id']." "; ?><br>
+Start playing instantly by clicking play above.</span><br><br></p>
 
 <?php }else{ ?> 
-<p class="style"><span>HappyTweet is a multiplayer game, that lets you rate tweets according to their sentimental values. You can play against your friends, earn many achievements and have lots of fun!<br xmlns="http://www.w3.org/1999/xhtml">Even if you are not registered, you can still give it a try!&nbsp;</span>
+<p class="style"><span>
+<?php echo "user ".$_SESSION['access_token']['user_id']." "; ?><br>
+HappyTweet is a multiplayer game, that lets you rate tweets according to their sentimental values. You can play against your friends, earn many achievements and have lots of fun!<br xmlns="http://www.w3.org/1999/xhtml">Even if you are not registered, you can still give it a try!&nbsp;</span>
     </p>
 
     <a class="button login" href="./twitter_redirect.php">Login with Twitter</a>
