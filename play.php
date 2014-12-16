@@ -130,16 +130,16 @@ for($i=0;$i<10;$i++){
   
     <!--counter-->
    	<div class="play_countdown">
-		<p id="play_paragraph"></p>
+		<p id="play_paragraph"></p><br><br>
 	</div>
 	
 	<!--new tweet will be in here-->
-	<div class="play_paragraph">
-		<p id="paragraph"></p>
+
+	<div class="play_paragraph" style="text-align:center;">
+		<p id="paragraph" style="text-align:center;"></p>
 	</div>
   
-
-	<p id="rating_p">Which sentiment this tweet mostly has?</p>
+	<p id="rating_p"><!--Which sentiment this tweet mostly has?--></p>
 
 	<nav>
 		<ul id="sentiment">	
@@ -152,11 +152,12 @@ for($i=0;$i<10;$i++){
 
 	</nav>
 
-	<div id="wordSelection">
-		<p id="selection_p">Click on the word which made you give that point!</p>
+	<div id="wordSelection" style="text-align:center;">
+		<p id="selection_p"><!--Click on the word which made you give that point!--></p>
 		
 		<!--clikable words of tweets will be created in this div-->
 		<div id="tweetWords"></div>
+		<br><br>
 	</div>
 	<!-- tweets that we get from database will be sent to the javascript-->	
 	 <script type="text/javascript">	
