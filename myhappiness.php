@@ -36,7 +36,11 @@ if(!$loggedin){ header('Location: ./index.php');}
   <div class="w-container myhappiness_container">
     <div class="happiness_score"></div>
     <div class="happiness_score_text"><strong class="myhappiness_text">My Happiness Score</strong>
-    <p id="point"></p>
+    <p id="point"><center><?php 
+    $myscore = include("./calculatescore.php");
+    echo $_SESSION['myscore'];
+    unset($_SESSION['myscore']);
+    ?><center></p>
     </div><a class="button share_myhappiness_button" href="#">Share My Happiness</a><a class="button sync_mytweets_button" href="twitter_sync.php">Sync My Tweets</a>
   </div>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
