@@ -12,7 +12,7 @@ require_once('connection.php');
 
 /* If the oauth_token is old redirect to the connect page. */
 if (isset($_REQUEST['oauth_token'])
-	//&& $_SESSION['oauth_token'] !== $_REQUEST['oauth_token']
+	&& $_SESSION['oauth_token'] !== $_REQUEST['oauth_token']
 	) {
   $_SESSION['oauth_status'] = 'oldtoken';
   header('Location: ./twitter_clearsessions.php');
@@ -26,7 +26,6 @@ $access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
 
 /* Save the access tokens. Normally these would be saved in a database for future use. */
 $_SESSION['access_token'] = $access_token;
-
 
 $errmsg_arr = array ();
 $errflag = false;
@@ -74,6 +73,6 @@ if (200 == $connection->http_code) {
   else header('Location: ./index.php');
 } else {
   /* Save HTTP status for error dialog on connnect page.*/
-  header('Location: ./twitter_clearsessions.php');
+  header('Location: ./twitter_redirect.php');
 }
 ?>
