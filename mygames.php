@@ -14,10 +14,15 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
 if(!$loggedin){ header('Location: ./index.php');}
 
 
-$stmt = $db->prepare("SELECT Plays.PlayedOn, Plays.EndPoint, Plays.BonusPoint, Plays.MatchPoint, Users.TotalPoint 
-						FROM Plays INNER JOIN Users ON Plays.UserID = Users.UserID 
-							WHERE Users.UserID = '1905276726' ORDER BY Plays.PlayedOn");
-$stmt->execute();
+$stmt = $db->prepare("SELECT WeeklyPoint,TotalPoint FROM Users Where UserID=?");
+$stmt->execute(array($_SESSION['access_token']['user_id']));
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$totalpoint=$row['TotalPoint'];
+$weeklypoint=$row['WeeklyPoint'];
+
+
+$stmt = $db->prepare("SELECT * FROM Plays WHERE UserID=? ORDER BY Plays.PlayedOn;");
+$stmt->execute(array($_SESSION['access_token']['user_id']));
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +44,8 @@ $stmt->execute();
 <?php include("./navigation.php");?>
 
   <div class="w-container mygames_container">
-    <p id= "total_point">My total point:</p>
+    <p id= "total_point">My total point: <?php echo $totalpoint;?><br>
+    My weekly point: <?php echo $weeklypoint;?></p>
     <a class="share mygames_share_score" href="#">Share My Score</a>
     <a class="share mygames_share_rank" href="#">Share My Rank</a><br>
     <table style="width:100%">
@@ -54,12 +60,18 @@ $stmt->execute();
 	  <?php
 
 		   while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		   	$endpoint=$row['EndPoint'];
+		   	$bonuspoint=$row['BonusPoint'];
+		   	$matchpoint=$row['MatchPoint'];
+		   	$totalforoneplay=$endpoint+$bonuspoint+$matchpoint;
+		   	if($row['MatchWith']==0) $matchpoint="Not yet!";
+
 			   echo "<tr>";
-			   echo "<td>".$row['Plays.PlayedOn']."</td>";
-			   echo "<td>".$row['Plays.EndPoint']."</td>";
-			   echo "<td>".$row['Plays.BonusPoint']."</td>";
-			   echo "<td>".$row['Plays.MatchPoint']."</td>";
-			   echo "<td>".$row['Users.TotalPoint']."</td>";
+			   echo "<td align=\"center\">".$row['PlayedOn']."</td>";
+			   echo "<td align=\"center\">".$endpoint."</td>";
+			   echo "<td align=\"center\">".$bonuspoint."</td>";
+			   echo "<td align=\"center\">".$matchpoint."</td>";
+			   echo "<td align=\"center\">".$totalforoneplay."</td>";
 			   echo "</tr>";
 			   $index++;
 		   }
