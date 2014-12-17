@@ -18,7 +18,7 @@ if(!$loggedin){ header('Location: ./index.php');}
 
 //First method: In the plays that are waiting for a match, bring random one of them that I did not play before.
 $stmt = $db->prepare("SELECT P1.UserID,P1.SetID FROM Plays AS P1
-WHERE P1.UserID!= ?
+WHERE P1.UserID!= ? AND P1.Vote10!=-1
 AND P1.MatchWith= 0
 AND NOT EXISTS (
 	SELECT P2.SetID FROM Plays AS P2

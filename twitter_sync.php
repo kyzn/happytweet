@@ -72,7 +72,7 @@ foreach($content as $tweet)
 
   	//Insert into tweets table
 
-  	$stmt=$db->prepare("INSERT INTO Tweets VALUES (?,?,?,?,NOW(),0,0)");
+  	$stmt=$db->prepare("INSERT INTO Tweets VALUES (?,?,?,?,NOW(),0,0,0)");
   	//TweetID, UserID, TweetText, TweetTime, CreatedOn
 $stmt->execute(array(
 	$tweet->id,

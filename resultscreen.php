@@ -72,6 +72,17 @@ if(!$loggedin){ header('Location: ./index.php');}
 		//for ($x = 1; $x <= 10; $x++) echo $str[$x].' ';
 
 
+
+		//If not finished, mark unsolved questions -1.
+		for($x=1;$x<=10;$x++){
+			if(!isset($emo[$x])  ){
+				$emo[$x]=-1;
+			} 
+		}
+
+		//echo " scores ";
+		//for ($x = 1; $x <= 10; $x++) echo $emo[$x].' ';
+
 		$stmt = $db->prepare("UPDATE Plays SET Vote1=?, Vote2=?, Vote3=?, Vote4=?,
 		Vote5=?, Vote6=?, Vote7=?, Vote8=?, Vote9=?, Vote10=? WHERE UserID=? AND SetID=?;");
 		$stmt->execute(array(
