@@ -31,7 +31,7 @@ $stmt->execute();
   <link rel="stylesheet" type="text/css" href="css/webflow.css">
   <link rel="stylesheet" type="text/css" href="css/happytweet.webflow.css">
   <script type="text/javascript" src="js/modernizr.js"></script>
-'
+
 </head>
 <body>
 <?php include("./navigation.php");?>

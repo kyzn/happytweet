@@ -38,7 +38,7 @@ $stmt->execute(array($_SESSION['access_token']['user_id']));
   <link rel="stylesheet" type="text/css" href="css/webflow.css">
   <link rel="stylesheet" type="text/css" href="css/happytweet.webflow.css">
   <script type="text/javascript" src="js/modernizr.js"></script>
-'
+
 </head>
 <body>
 <?php include("./navigation.php");?>

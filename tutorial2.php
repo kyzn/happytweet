@@ -113,7 +113,7 @@ if($loggedin){ header('Location: ./index.php');}
   <script type="text/javascript" src="js/modernizr.js"></script>
   <script type="text/javascript" src="js/tab.js"></script>
   <!--<script type="text/javascript" src="js/countdown.js"></script>-->
-'
+
 </head>
 <body class="w-clearfix">
 
