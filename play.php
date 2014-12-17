@@ -13,7 +13,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
 //Go away if not logged in.
 if(!$loggedin){ header('Location: ./index.php');}
 //DEBUG
-echo "user ".$_SESSION['access_token']['user_id']." ";
+//echo "user ".$_SESSION['access_token']['user_id']." ";
 //Prepare the set here:
 
 //First method: In the plays that are waiting for a match, bring random one of them that I did not play before.
@@ -51,7 +51,7 @@ if($numrows == 0){ //No such set! Gonna try the second method.
 	$setid = $row['SetID'];
 	$_SESSION['setid']=$setid;
 	//DEBUG
-	echo "method 2 set $setid ";
+	//echo "method 2 set $setid ";
 
 	//Insert the game about to start to the database.
 	$stmt = $db->prepare("INSERT INTO Plays (UserID, SetID, PlayedOn) VALUES (?,?, NOW());");	
@@ -60,7 +60,7 @@ if($numrows == 0){ //No such set! Gonna try the second method.
 
 }else{
 	//DEBUG
-	echo "method 1 ";
+	//echo "method 1 ";
 	//First method worked! Continue with this set.
 	$row = $stmt->fetch(PDO::FETCH_ASSOC);
 	$setid = $row['SetID'];
@@ -68,7 +68,7 @@ if($numrows == 0){ //No such set! Gonna try the second method.
 	$matchid = $row['UserID'];
 	$_SESSION['matchid']=$matchid;
 	//DEBUG
-	echo "set $setid matchwith $matchid ";
+	//echo "set $setid matchwith $matchid ";
 
 	//Update the matched row, ie. mark as "matched" so that noone else matches that.
 	$stmt = $db->prepare("UPDATE Plays SET MatchWith=? WHERE UserID=? AND SetID=?;");
