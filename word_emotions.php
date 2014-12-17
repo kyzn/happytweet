@@ -14,16 +14,10 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
 if(!$loggedin){ header('Location: ./index.php');}
 
 
-$stmt_1 = $db->prepare("SELECT WordText FROM Words ORDER BY Vote5Count DESC LIMIT 5");
+$stmt_1 = $db->prepare("SELECT WordText, (Vote1Count*(-3)+Vote2Count*(-2)+Vote4Count*2 + Vote5Count*3)/(Vote1Count+Vote2Count+Vote3Count+Vote4Count+Vote5Count) AS Grade FROM Words WHERE WordID !=1 ORDER BY Grade DESC LIMIT 5;");
 $stmt_1->execute();
-$stmt_2 = $db->prepare("SELECT WordText FROM Words ORDER BY Vote4Count DESC LIMIT 5");
+$stmt_2 = $db->prepare("SELECT WordText, (Vote1Count*(-3)+Vote2Count*(-2)+Vote4Count*2 + Vote5Count*3)/(Vote1Count+Vote2Count+Vote3Count+Vote4Count+Vote5Count) AS Grade FROM Words WHERE WordID !=1 ORDER BY Grade ASC LIMIT 5;");
 $stmt_2->execute();
-$stmt_3 = $db->prepare("SELECT WordText FROM Words ORDER BY Vote3Count DESC LIMIT 5");
-$stmt_3->execute();
-$stmt_4 = $db->prepare("SELECT WordText FROM Words ORDER BY Vote2Count DESC LIMIT 5");
-$stmt_4->execute();
-$stmt_5 = $db->prepare("SELECT WordText FROM Words ORDER BY Vote1Count DESC LIMIT 5");
-$stmt_5->execute();
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +44,7 @@ $stmt_5->execute();
 
     <table style="width:20%;display:inline-block">
 	  <tr class="titles">
-	    <th>Top Extremely Positive Words</th>
+	    <th>Happy Words</th>
 	  </tr>
 	  
 	  <?php
@@ -65,50 +59,11 @@ $stmt_5->execute();
    </table>
        <table style="width:20%;display:inline-block">
 	  <tr class="titles">
-	    <th>Top Positive Words</th>
+	    <th>Sad Words</th>
 	  </tr>
 	  
 	  <?php
 	  		   while ($row = $stmt_2->fetch(PDO::FETCH_ASSOC)) {
-			   echo "<tr>";
-			   echo "<td>".$row['WordText']."</td>";
-			   echo "</tr>";
-		   }
-		?>
-   </table>
-       <table style="width:20%;display:inline-block">
-	  <tr class="titles">
-	    <th>Top Neutral Words</th>
-	  </tr>
-	  
-	  <?php
-	  		   while ($row = $stmt_3->fetch(PDO::FETCH_ASSOC)) {
-			   echo "<tr>";
-			   echo "<td>".$row['WordText']."</td>";
-			   echo "</tr>";
-		   }
-		?>
-   </table>
-       <table style="width:20%;display:inline-block">
-	  <tr class="titles">
-	    <th>Top Negative Words</th>
-	  </tr>
-	  
-	  <?php
-	  		   while ($row = $stmt_4->fetch(PDO::FETCH_ASSOC)) {
-			   echo "<tr>";
-			   echo "<td>".$row['WordText']."</td>";
-			   echo "</tr>";
-		   }
-		?>
-   </table>
-       <table style="width:20%;display:inline-block">
-	  <tr class="titles">
-	    <th>Top Extremely Negative Words</th>
-	  </tr>
-	  
-	  <?php
-	  		   while ($row = $stmt_5->fetch(PDO::FETCH_ASSOC)) {
 			   echo "<tr>";
 			   echo "<td>".$row['WordText']."</td>";
 			   echo "</tr>";
