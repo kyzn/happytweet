@@ -73,7 +73,6 @@ $stmt->execute(array($_SESSION['access_token']['user_id']));
 			   echo "<td align=\"center\">".$matchpoint."</td>";
 			   echo "<td align=\"center\">".$totalforoneplay."</td>";
 			   echo "</tr>";
-			   $index++;
 		   }
 
 		?>
