@@ -14,7 +14,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
 if(!$loggedin){ header('Location: ./index.php');}
 
 
-$stmt = $db->prepare("SELECT ScreenName,WeeklyPoint,TotalPoint FROM Users ORDER BY WeeklyPoint DESC LIMIT 5");
+$stmt = $db->prepare("SELECT ScreenName,WeeklyPoint,TotalPoint FROM Users WHERE UserID!=0 ORDER BY WeeklyPoint DESC LIMIT 5");
 $stmt->execute();
 ?>
 
