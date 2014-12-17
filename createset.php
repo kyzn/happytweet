@@ -11,7 +11,7 @@ if($argv[1]==$pass || $_GET["p"]==$pass){
 
 	for($i=0;$i<10;$i++){
 
-		$stmt = $db->prepare("SELECT TweetID FROM (SELECT * FROM `Tweets` WHERE 1 ORDER BY InSets ASC LIMIT 100) lownumbers ORDER BY RAND() LIMIT 10");
+		$stmt = $db->prepare("SELECT TweetID FROM (SELECT * FROM `Tweets` WHERE TweetID!=0 ORDER BY InSets ASC LIMIT 100) lownumbers ORDER BY RAND() LIMIT 10");
 		$stmt->execute();
 		
 		$tweetids=array();
