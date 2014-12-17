@@ -46,8 +46,8 @@ $stmt->execute(array($_SESSION['access_token']['user_id']));
   <div class="w-container mygames_container">
     <p id= "total_point">My total point: <?php echo $totalpoint;?><br>
     My weekly point: <?php echo $weeklypoint;?></p>
-    <a class="share mygames_share_score" href="#">Share My Score</a>
-    <a class="share mygames_share_rank" href="#">Share My Rank</a><br>
+    <a class="share mygames_share_score" href="https://twitter.com/intent/tweet?text=My HappyTweet score is <?php echo $totalpoint;?>! Come join me at happytweet.org&via=happytweetorg&related=happytweetorg">Share My Score</a>
+    <!--<a class="share mygames_share_rank" href="#">Share My Rank</a><br>-->
     <table style="width:100%">
 	  <tr class="titles">
 	    <th>Date Time</th>
