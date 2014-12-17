@@ -14,9 +14,9 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
 if(!$loggedin){ header('Location: ./index.php');}
 
 
-$stmt_1 = $db->prepare("SELECT WordText, (Vote1Count*(-3)+Vote2Count*(-2)+Vote4Count*2 + Vote5Count*3)/(Vote1Count+Vote2Count+Vote3Count+Vote4Count+Vote5Count) AS Grade FROM Words WHERE WordID !=1 ORDER BY Grade DESC LIMIT 5;");
+$stmt_1 = $db->prepare("SELECT WordText, ROUND((Vote1Count*(1)+Vote2Count*(2)+Vote3Count*(3)+Vote4Count*(4)+Vote5Count*(5))/(Vote1Count+Vote2Count+Vote3Count+Vote4Count+Vote5Count),2) AS Grade FROM Words WHERE WordID !=1 ORDER BY Grade DESC LIMIT 5;");
 $stmt_1->execute();
-$stmt_2 = $db->prepare("SELECT WordText, (Vote1Count*(-3)+Vote2Count*(-2)+Vote4Count*2 + Vote5Count*3)/(Vote1Count+Vote2Count+Vote3Count+Vote4Count+Vote5Count) AS Grade FROM Words WHERE WordID !=1 ORDER BY Grade ASC LIMIT 5;");
+$stmt_2 = $db->prepare("SELECT WordText, ROUND((Vote1Count*(1)+Vote2Count*(2)+Vote3Count*(3)+Vote4Count*(4)+Vote5Count*(5))/(Vote1Count+Vote2Count+Vote3Count+Vote4Count+Vote5Count),2) AS Grade FROM Words WHERE WordID !=1 ORDER BY Grade ASC LIMIT 5;");
 $stmt_2->execute();
 ?>
 
@@ -42,7 +42,7 @@ $stmt_2->execute();
 
   <div class="w-container mygames_container">
 
-    <table style="width:20%;display:inline-block">
+    <table style="margin-left:20%;width:40%;display:inline-block">
 	  <tr class="titles">
 	    <th>Happy Words</th>
 	  </tr>
@@ -52,6 +52,7 @@ $stmt_2->execute();
 	  		   while ($row = $stmt_1->fetch(PDO::FETCH_ASSOC)) {
 			   echo "<tr>";
 			   echo "<td>".$row['WordText']."</td>";
+			   echo "<td>".$row['Grade']."</td>";
 			   echo "</tr>";
 		   }
 		   
@@ -66,6 +67,7 @@ $stmt_2->execute();
 	  		   while ($row = $stmt_2->fetch(PDO::FETCH_ASSOC)) {
 			   echo "<tr>";
 			   echo "<td>".$row['WordText']."</td>";
+			   echo "<td>".$row['Grade']."</td>";
 			   echo "</tr>";
 		   }
 		?>
